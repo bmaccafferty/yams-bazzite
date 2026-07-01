@@ -118,7 +118,7 @@ check_dependencies() {
 
         if [ "${install_deps,,}" = "y" ]; then
             echo "Installing missing packages..."
-            if ! sudo apt update && sudo apt install -y "${missing_packages[@]}"; then
+            if ! sudo dnf install -y "${missing_packages[@]}"; then
                 log_error "Failed to install missing packages. Please install them manually: ${missing_packages[*]}"
             fi
             log_success "Successfully installed missing packages ✅"
@@ -129,10 +129,6 @@ check_dependencies() {
 
     # Check Docker and Docker Compose
     if command -v docker &> /dev/null; then
-        # Check if Docker is installed via snap
-        if [[ $(which docker) == "/snap/bin/docker" ]]; then
-            log_error "Docker is installed via snap. YAMS requires the official Docker installation from docker.com. Please remove snap Docker and install Docker from https://docs.docker.com/engine/install/ or install docker using YAMS"
-        fi
         log_success "docker exists ✅"
     fi
 
@@ -142,14 +138,7 @@ check_dependencies() {
     fi
 
     log_warning "⚠️  Docker/Docker Compose not found! ⚠️"
-    read -p "Install Docker and Docker Compose? Only works on Debian/Ubuntu (y/N) [Default = n]: " install_docker
-    install_docker=${install_docker:-"n"}
-
-    if [ "${install_docker,,}" = "y" ]; then
-        bash ./docker.sh
-    else
-        log_error "Please install Docker and Docker Compose first"
-    fi
+    log_error "Please install Docker first ('rpm-ostree install docker' on Fedora Atomic, then reboot)"
 }
 
 configure_media_service() {
@@ -481,7 +470,8 @@ fi
 install_cli() {
     echo
     log_info "Installing YAMS CLI..."
-    if sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
+    mkdir -p "$HOME/.local/bin"
+    if cp yams "$HOME/.local/bin/yams" && chmod +x "$HOME/.local/bin/yams"; then
         log_success "YAMS CLI installed successfully ✅"
     else
         log_error "Failed to install YAMS CLI. Check permissions ❌"
