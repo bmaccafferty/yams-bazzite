@@ -103,4 +103,4 @@ volumes:
 
 * Upstream
 
-This is a fork of [[https://github.com/rogsme/yams][rogsme/yams]]. All credit for the Docker Compose stack and application architecture goes to the upstream maintainers. This fork only patches the installer for Fedora Atomic compatibility.
+This is a fork of [[https://github.com/rogsme/yams][rogsme/yams]]. All credit for the Docker Compose stack and application architecture goes to the upstream maintainers. This fork only patches the installer for Fedora Atomic compatibility, with assistance from an AI coding tool (DeepSeek).
